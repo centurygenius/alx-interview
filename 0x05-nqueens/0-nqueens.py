@@ -43,7 +43,7 @@ def solve_nqueens_util(board, col, n, solutions):
 
     return res
 
-def solve_nqueens(n):
+def nqueens(n):
     """Solve the N Queens problem."""
     board = [[0 for _ in range(n)] for _ in range(n)]
     solutions = []
@@ -65,7 +65,6 @@ if __name__ == "__main__":
         print("N must be at least 4")
         sys.exit(1)
 
-    solutions = solve_nqueens(N)
+    solutions = nqueens(N)
     for solution in solutions:
         print(solution)
-
