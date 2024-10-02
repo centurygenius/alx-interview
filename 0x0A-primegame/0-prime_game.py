@@ -2,7 +2,7 @@
 """Module for Prime Game"""
 
 def isWinner(x, nums):
-    if x <= 0 or not nums:
+    if x <= 0 or  nums is None:
         return None
 
      if x != len(nums):
