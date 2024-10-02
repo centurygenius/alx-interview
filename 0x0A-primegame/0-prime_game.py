@@ -1,62 +1,57 @@
 #!/usr/bin/python3
-"""Module for Prime Game"""
+"""Module defining isWinner function."""
+
 
 def isWinner(x, nums):
-    if x <= 0 or  nums is None:
-        return None
+    """Function to get who has won in prime game"""
+    mariaWinsCount = 0
+    benWinsCount = 0
 
-     if x != len(nums):
-        return None
-    # Initialize scores and array of possible prime numbers
-    ben = 0
-    maria = 0
-    # Create a list 'a' of length sorted(nums)[-1] + 1 with all elements
-    # initialized to 1
-    a = [1 for x in range(sorted(nums)[-1] + 1)]
-    # The first two elements of the list, a[0] and a[1], are set to 0
-    # because 0 and 1 are not prime numbers
-    a[0], a[1] = 0, 0
-    # Use Sieve of Eratosthenes algorithm to generate array of prime numbers
-    for i in range(2, len(a)):
-        rm_multiples(a, i)
-    # Play each round of the game
-    for i in nums:
-        # If the sum of prime numbers in the set is even, Ben wins
-        if sum(a[0:i + 1]) % 2 == 0:
-            ben += 1
-        else:
-            maria += 1
-    # Determine the winner of the game
-    if ben > maria:
-        return "Ben"
-    if maria > ben:
-        return "Maria"
+    for num in nums:
+        roundsSet = list(range(1, num + 1))
+        primesSet = primes_in_range(1, num)
+
+        if not primesSet:
+            benWinsCount += 1
+            continue
+
+        isMariaTurns = True
+
+        while(True):
+            if not primesSet:
+                if isMariaTurns:
+                    benWinsCount += 1
+                else:
+                    mariaWinsCount += 1
+                break
+
+            smallestPrime = primesSet.pop(0)
+            roundsSet.remove(smallestPrime)
+
+            roundsSet = [x for x in roundsSet if x % smallestPrime != 0]
+
+            isMariaTurns = not isMariaTurns
+
+    if mariaWinsCount > benWinsCount:
+        return "Winner: Maria"
+
+    if mariaWinsCount < benWinsCount:
+        return "Winner: Ben"
+
     return None
 
 
-def rm_multiples(ls, x):
-    """
-    Removes multiples of a prime number from an array of possible prime
-    numbers.
+def is_prime(n):
+    """Returns True if n is prime, else False."""
+    if n < 2:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
 
-    Args:
-        ls (list of int): An array of possible prime numbers.
-        x (int): The prime number to remove multiples of.
 
-    Returns:
-        None.
-
-    Raises:
-        None.
-    """
-    # This loop iterates over multiples of a prime number and marks them as
-    # non-prime by setting their corresponding value to 0 in the input
-    # list ls. Starting from 2, it sets every multiple of x up to the
-    # length of ls to 0. If the index i * x is out of range for the list ls,
-    # the try block will raise an IndexError exception, and the loop will
-    # terminate using the break statement.
-    for i in range(2, len(ls)):
-        try:
-            ls[i * x] = 0
-        except (ValueError, IndexError):
-            break
+def primes_in_range(start, end):
+    """Returns a list of prime numbers between start and end (inclusive)."""
+    primes = [n for n in range(start, end+1) if is_prime(n)]
+    return primes
